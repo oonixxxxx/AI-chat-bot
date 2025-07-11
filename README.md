@@ -1,4 +1,3 @@
-```markdown
 # GigaChat AI Assistant
 
 ![Project Banner](https://via.placeholder.com/800x200?text=GigaChat+AI+Assistant)  
@@ -20,6 +19,7 @@ GigaChat AI Assistant — это интерактивный веб-интерф�
 - Аккаунт разработчика GigaChat ([регистрация](https://developers.sber.ru/))
 
 ### Установка
+
 ```bash
 git clone https://github.com/yourusername/gigachat-assistant.git
 cd gigachat-assistant
