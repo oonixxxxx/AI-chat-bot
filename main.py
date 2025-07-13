@@ -1,5 +1,5 @@
 import streamlit as st
-from gigachatapi import get_access_token, send_prompt
+from gigachatapi import get_access_token, send_prompt, generate_image
 from time import sleep
 import random
 
@@ -107,6 +107,10 @@ with chat_container:
                 </div>
             </div>
             """, unsafe_allow_html=True)
+            
+            # Если есть изображение - отображаем его
+            if "image" in message:
+                st.image(message["image"], use_column_width=True)
 
 # Обработка ввода пользователя с улучшенным UI
 if prompt := st.chat_input("Введите ваш вопрос..."):
@@ -114,11 +118,36 @@ if prompt := st.chat_input("Введите ваш вопрос..."):
     user_message = animate_message(prompt, "user")
     st.session_state.messages.append({"role": "user", "content": user_message})
     
-    # Анимация "печатает..." с случайным выбором эмодзи
-    typing_emojis = ["✍️", "💭", "🧠", "🤔", "⌨️"]
-    with st.spinner(f"{random.choice(typing_emojis)} Обрабатываю ваш запрос..."):
-        response = send_prompt(prompt, st.session_state.access_token)
-        
-        # Анимация ответа
-        assistant_message = animate_message(response, "assistant")
-        st.session_state.messages.append({"role": "assistant", "content": assistant_message})
+    # Определяем, хочет ли пользователь сгенерировать изображение
+    generate_image_flag = any(keyword in prompt.lower() for keyword in ["нарисуй", "изображение", "картинку", "сгенерируй"])
+    
+    if generate_image_flag:
+        # Анимация "генерирую изображение..."
+        with st.spinner("🎨 Генерирую изображение..."):
+            image_url = generate_image(prompt, st.session_state.access_token)
+            
+            if image_url:
+                # Добавляем изображение в историю сообщений
+                st.session_state.messages.append({
+                    "role": "assistant", 
+                    "content": f"Вот изображение по вашему запросу: '{prompt}'",
+                    "image": image_url
+                })
+                
+                # Отображаем изображение
+                with chat_container:
+                    st.image(image_url, caption=f"Изображение по запросу: '{prompt}'")
+            else:
+                st.session_state.messages.append({
+                    "role": "assistant", 
+                    "content": "Извините, не удалось сгенерировать изображение"
+                })
+    else:
+        # Обычный текстовый запрос
+        typing_emojis = ["✍️", "💭", "🧠", "🤔", "⌨️"]
+        with st.spinner(f"{random.choice(typing_emojis)} Обрабатываю ваш запрос..."):
+            response = send_prompt(prompt, st.session_state.access_token)
+            
+            # Анимация ответа
+            assistant_message = animate_message(response, "assistant")
+            st.session_state.messages.append({"role": "assistant", "content": assistant_message})
