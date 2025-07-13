@@ -9,8 +9,8 @@ from time import sleep
 import random
 
 # Настройки API
-CLIENT_ID = '7dc29a3d-122c-44d6-bcbf-590970571ebb'
-SECRET = '7dc29a3d-122c-44d6-bcbf-590970571ebb:ee06ff75-0922-481b-962c-2a8b7ee2ef87'
+CLIENT_ID = ''
+SECRET = ''
 GIGACHAT_API_URL = "https://gigachat.devices.sberbank.ru/api/v1"
 
 # Получение токена
